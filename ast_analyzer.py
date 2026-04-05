@@ -154,7 +154,7 @@ def extract_features(source):
 
 if __name__ == "__main__":
 
-    sample_code =
+    sample_code = "def sample():\n    pass"
 
     result = extract_features(sample_code)
 

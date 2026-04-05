@@ -1,23 +1,30 @@
-# AI Code Maintainability Scoring Engine (Phase 1)
+# AI Code Maintainability Scoring & Refactoring Engine
 
 ## Overview
-The **AI Code Maintainability Scoring Engine** is a modular, machine-learning-based system designed to evaluate the structural quality of Python code. Rather than relying on rigid rule-based linters (like PyLint or Flake8), this engine uses a supervised learning approach (Random Forest) to predict maintainability risks dynamically based on pure structural signals.
+The **AI Code Maintainability Scoring Engine** is a modular, machine-learning-based system designed to evaluate the structural quality of Python code and autonomously refactor it. Rather than relying on rigid rule-based linters (like PyLint or Flake8), this engine uses a supervised learning approach (Random Forest) to predict maintainability risks dynamically based on pure structural signals, and then utilizes Deep Learning (CodeT5) to actively improve the code.
 
-This repository contains **Phase 1**: The Core Scoring Engine. It evaluates code and assigns a risk score (0–100), a risk category (Low / Medium / High), and surfaces the top structural risk factors in human-readable terms.
+This repository contains the completely unified Engine:
+- **Phase 1 (The Evaluator)**: The Core Scoring Engine. It evaluates code and assigns a risk score (0–100), a risk category, and surfaces top structural risk factors.
+- **Phase 2 (The Refactorer)**: The Autonomous Refactoring Agent. It generates, validates, and selects better candidates for structurally risky code to iteratively improve the risk score.
 
 ## System Architecture
 
-The engine is built on a strictly modular and stateless architecture. This ensures that the scoring is entirely deterministic, which is a critical requirement for serving as a reward signal in future phases.
+The engine is built on a strictly modular architecture. 
 
-1. **AST Analyzer (`ast_analyzer.py`)**: Parses Python Abstract Syntax Trees (AST) to extract 11 core structural metrics without executing the code.
-2. **Dataset Generator (`dataset_generator.py`)**: Generates balanced, labeled synthetic datasets of clean and risky Python patterns for model training.
-3. **Feature Pipeline (`feature_pipeline.py`)**: Standardizes and scales feature vectors using a frozen `StandardScaler` to ensure training and inference scales remain perfectly matched.
-4. **ML Risk Model (`model_trainer.py`)**: Trains and compares Random Forest and XGBoost classifiers, saving the best performer for stateless inference.
-5. **Explanation Engine (`explanation_engine.py`)**: Converts raw feature importances and code thresholds into plain-English sentences to explain *why* a particular score was assigned.
-6. **Scoring API (`scoring_api.py`)**: The central access point exposing the master `evaluate()` backend function.
+### Evaluator (Phase 1)
+1. **AST Analyzer (`ast_analyzer.py`)**: Parses Python Abstract Syntax Trees (AST) to extract 11 core structural metrics.
+2. **ML Risk Model (`model_trainer.py`)**: Uses a Random Forest classifier for stateless inference of risk scores.
+3. **Explanation Engine (`explanation_engine.py`)**: Converts raw feature importances into plain-English explanations.
+4. **Scoring API (`scoring_api.py`)**: The central access point exposing the master `evaluate()` backend function.
+
+### Refactorer (Phase 2)
+1. **Candidate Generator (`phase2/candidate_generator.py`)**: Uses a localized Deep Learning model (`CodeT5`) to generate multiple refactored versions of the code.
+2. **Code Validator (`phase2/validation.py`)**: Ensures that generated candidates compile and do not contain syntax errors.
+3. **Candidate Selector (`phase2/selector.py`)**: Uses the `Scoring API` to rank candidates and selects the one that provides the best improvement in the maintainability risk score.
+4. **Iterative Optimizer (`phase2/optimization.py`)**: Manages the iterative loops to continuously refine the code until a target score is reached.
 
 ## Extracted Structural Features
-The AST Analyzer evaluates maintainability using the following exact signals:
+The Evaluator rates maintainability using the following exact signals:
 - Maximum Nesting Depth (*Strongest Indicator*)
 - Cyclomatic Complexity Approximation
 - Average Function Length and Total Line Count
@@ -33,41 +40,16 @@ The AST Analyzer evaluates maintainability using the following exact signals:
 ### Installation
 Ensure you have Python 3.8+ installed. Install the required dependencies:
 ```bash
-pip install scikit-learn xgboost numpy
+pip install scikit-learn xgboost numpy transformers torch
 ```
 
 ### Usage
-To score any Python code string or `.py` file path, simply import and call the `evaluate` function from the Scoring API:
+To analyze and refactor a Python file automatically, you can use the unified `main.py` entry point:
 
-```python
-import json
-from scoring_api import evaluate
-
-code_to_test = """
-def example_function(x):
-    if x > 0:
-        for i in range(x):
-            print(i)
-    return x
-"""
-
-result = evaluate(code_to_test)
-print(json.dumps(result, indent=2))
+```bash
+python main.py path/to/your/messy_code.py
 ```
-
-**Example Output:**
-```json
-{
-  "risk_score": 12,
-  "risk_level": "Low",
-  "confidence": 0.12,
-  "top_risk_factors": [
-    "No significant structural risk factors detected."
-  ]
-}
-```
-
-## Future Roadmap (Phase 2)
-This Phase 1 scoring engine actively serves as the deterministic reward function for **Phase 2**.
-
-Phase 2 will introduce an autonomous refactoring agent (using Reinforcement Learning or heuristics) capable of modifying structurally risky code. The agent will repeatedly query this API, comparing `evaluate(new_code)` against `evaluate(old_code)` to use the score delta as a strict reward signal to systematically improve codebase health.
+This will:
+1. Provide the initial maintainability score.
+2. Interactively use Deep Learning to refactor the code.
+3. Output the cleaned code and the final score improvement.

@@ -56,12 +56,12 @@ if __name__ == "__main__":
     print("  SCORING API DEMO")
     print("=" * 60)
 
-    clean_code =
+    clean_code = "def greet(name):\n    return f'Hello {name}!'"
     print("\n🟢 Testing Clean Code...")
     clean_result = evaluate(clean_code)
     print(json.dumps(clean_result, indent=2))
 
-    risky_code =
+    risky_code = "global_counter=0\ndef bloated_pipeline(data):\n    global global_counter\n    try:\n        for x in data:\n            if x>0:\n                for i in range(x):\n                    try:\n                        if i%2==0: global_counter+=1\n                    except: pass\n    except Exception: return -1\n    return global_counter"
     print("\n🔴 Testing Risky Code...")
     risky_result = evaluate(risky_code)
     print(json.dumps(risky_result, indent=2))
