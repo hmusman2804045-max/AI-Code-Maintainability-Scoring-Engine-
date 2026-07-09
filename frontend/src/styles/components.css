@@ -1,0 +1,499 @@
+/* ---------- header overlay (DOM, above the 3D scene) ---------- */
+
+.app-header-overlay {
+  position: fixed;
+  top: 26px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.glitch-title {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  text-shadow: 0 0 20px var(--copper-glow);
+  margin: 0;
+  animation: title-breathe 4s ease-in-out infinite;
+}
+
+.glitch-title::before,
+.glitch-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.glitch-title::before {
+  color: var(--ember);
+  text-shadow: 0 0 10px var(--ember-glow);
+  animation: glitch-slice-a 3.1s infinite steps(1);
+}
+
+.glitch-title::after {
+  color: var(--titanium);
+  text-shadow: 0 0 10px var(--titanium-glow);
+  animation: glitch-slice-b 2.7s infinite steps(1);
+}
+
+@keyframes title-breathe {
+  0%, 100% { text-shadow: 0 0 20px var(--copper-glow); }
+  50% { text-shadow: 0 0 38px var(--copper-glow), 0 0 70px var(--ember-faint); }
+}
+
+@keyframes glitch-slice-a {
+  0%, 87%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
+  88% { clip-path: inset(12% 0 74% 0); transform: translate(-5px, 2px); opacity: 0.9; }
+  90% { clip-path: inset(58% 0 22% 0); transform: translate(4px, -2px); opacity: 0.9; }
+  92% { clip-path: inset(30% 0 52% 0); transform: translate(-3px, 1px); opacity: 0.85; }
+  94% { clip-path: inset(100% 0 0 0); opacity: 0; }
+}
+
+@keyframes glitch-slice-b {
+  0%, 44%, 56%, 100% { clip-path: inset(100% 0 0 0); transform: none; opacity: 0; }
+  46% { clip-path: inset(70% 0 8% 0); transform: translate(5px, -1px); opacity: 0.85; }
+  49% { clip-path: inset(8% 0 78% 0); transform: translate(-4px, 2px); opacity: 0.9; }
+  52% { clip-path: inset(42% 0 40% 0); transform: translate(3px, 0); opacity: 0.85; }
+  54% { clip-path: inset(100% 0 0 0); opacity: 0; }
+}
+
+.app-subtitle {
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  margin-top: 8px;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- panels embedded in the 3D scene ---------- */
+
+.panel3d {
+  pointer-events: auto;
+}
+
+.stage-3d {
+  width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: center;
+}
+
+.hud-panel3d .hud-panel {
+  width: 660px;
+}
+
+/* ---------- tilt panel (volumetric glass) ---------- */
+
+.tilt-panel {
+  position: relative;
+  will-change: transform;
+  width: 100%;
+}
+
+.tilt-sheen {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 195, 94, 0.1) 0%,
+    rgba(255, 106, 43, 0.05) 45%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%) translateZ(40px);
+  pointer-events: none;
+  z-index: 2;
+  filter: blur(6px);
+}
+
+/* ---------- flip stage: the physical editor object ---------- */
+
+.flip-stage {
+  position: relative;
+  width: 100%;
+  perspective: 1600px;
+}
+
+.flip-tilt {
+  transform-style: preserve-3d;
+}
+
+.flip-object {
+  position: relative;
+  display: grid;
+  transform-style: preserve-3d;
+  width: 100%;
+}
+
+.flip-face {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+}
+
+.flip-front {
+  transform: rotateY(0deg) translateZ(1px);
+}
+
+.flip-back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.flip-back.glass-panel::before {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 106, 43, 0.55),
+    rgba(255, 106, 43, 0.08) 30%,
+    rgba(139, 144, 153, 0.28) 60%,
+    rgba(255, 195, 94, 0.4) 100%
+  );
+}
+
+/* ---------- editor faces ---------- */
+
+.editor-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.editor-title {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+}
+
+.editor-subtitle {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.editor-body {
+  position: relative;
+  background: rgba(8, 5, 3, 0.55);
+  border-radius: 12px;
+  border: 1px solid var(--copper-faint);
+  overflow: auto;
+  max-height: 400px;
+  flex: 1;
+}
+
+.back-body {
+  border-color: var(--ember-faint);
+}
+
+.code-block {
+  margin: 0;
+  padding: 16px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* scanning laser sweep */
+.scan-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--copper) 20%, var(--amber-bright) 50%, var(--copper) 80%, transparent);
+  box-shadow: 0 0 18px var(--amber-glow), 0 0 42px var(--ember-glow);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scan-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--amber-faint), transparent 40%);
+  animation: scan-tint-pulse 1.1s ease-in-out infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@keyframes scan-tint-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+
+/* back face footer */
+.back-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 16px;
+}
+
+.points-saved {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.points-saved-number {
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+
+.points-saved-label {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.back-note {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  max-width: 340px;
+  text-align: right;
+}
+
+/* burst particles on flip */
+.burst-field {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.burst-particle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* ---------- buttons ---------- */
+
+.editor-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.magnetic-button {
+  position: relative;
+  background: linear-gradient(170deg, rgba(30, 20, 12, 0.9), rgba(10, 7, 5, 0.85));
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  overflow: hidden;
+  outline: 1px solid currentColor;
+  outline-offset: -1px;
+}
+
+.magnetic-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.button-trace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.trace-rect {
+  /* SVG2 geometry via CSS so calc() is valid */
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+}
+
+.button-ripple {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.button-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- analytics HUD ---------- */
+
+.hud-panel {
+  padding: 24px 28px;
+}
+
+.hud-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.hud-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.hud-header-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--copper-glow), transparent);
+}
+
+.hud-grid {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.hud-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hud-badge {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  width: fit-content;
+}
+
+.hud-confidence {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.hud-factors {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.hud-factors li {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.hud-factor-marker {
+  color: var(--ember);
+  margin-right: 7px;
+}
+
+@keyframes hud-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 36px var(--ember-glow), inset 0 0 55px var(--ember-faint);
+  }
+  50% {
+    box-shadow: 0 0 75px var(--ember-glow), inset 0 0 90px var(--copper-faint);
+  }
+}
+
+.hud-pulse {
+  animation: hud-pulse-glow 1.4s ease-in-out infinite;
+}
+
+/* ---------- risk gauge ---------- */
+
+.risk-gauge {
+  position: relative;
+  width: 210px;
+  height: 210px;
+}
+
+.gauge-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gauge-readout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.gauge-ticking {
+  animation: readout-jitter 0.09s infinite;
+}
+
+.gauge-locked {
+  animation: readout-lock 0.35s ease-out;
+}
+
+@keyframes readout-jitter {
+  0% { transform: translate(-50%, -58%) skewX(0deg); }
+  25% { transform: translate(calc(-50% + 1px), -58%) skewX(3deg); }
+  50% { transform: translate(calc(-50% - 1px), calc(-58% + 1px)) skewX(-2deg); }
+  75% { transform: translate(-50%, calc(-58% - 1px)) skewX(1deg); }
+  100% { transform: translate(-50%, -58%) skewX(0deg); }
+}
+
+@keyframes readout-lock {
+  0% { transform: translate(-50%, -58%) scale(1.25); filter: blur(2px); }
+  100% { transform: translate(-50%, -58%) scale(1); filter: blur(0); }
+}
+
+.gauge-caption {
+  position: absolute;
+  bottom: 18px;
+  width: 100%;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+}
+
+/* ---------- status ---------- */
+
+.status-line {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  min-height: 1em;
+  text-align: center;
+}
+
+.status-line.error {
+  color: var(--ember);
+  text-shadow: 0 0 10px var(--ember-glow);
+}

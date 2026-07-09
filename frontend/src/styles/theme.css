@@ -1,0 +1,72 @@
+:root {
+  /* Solar Forge: warm obsidian, burning copper, glowing amber, titanium */
+  --bg-void: #0b0806;
+  --bg-panel: rgba(24, 16, 10, 0.62);
+  --bg-panel-solid: #140e09;
+
+  --copper: #e8823f;
+  --copper-bright: #ffa45c;
+  --copper-dim: #8a4a22;
+  --copper-glow: rgba(232, 130, 63, 0.55);
+  --copper-faint: rgba(232, 130, 63, 0.12);
+
+  --amber: #ffc35e;
+  --amber-bright: #ffd98a;
+  --amber-glow: rgba(255, 195, 94, 0.5);
+  --amber-faint: rgba(255, 195, 94, 0.1);
+
+  --ember: #ff6a2b;
+  --ember-glow: rgba(255, 106, 43, 0.55);
+  --ember-faint: rgba(255, 106, 43, 0.12);
+
+  --titanium: #c9cdd4;
+  --titanium-dim: #8b9099;
+  --titanium-glow: rgba(201, 205, 212, 0.35);
+  --titanium-faint: rgba(201, 205, 212, 0.08);
+
+  --text-primary: #f4ead9;
+  --text-dim: #a08e77;
+
+  --border-glass: rgba(232, 130, 63, 0.26);
+
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-display: "Orbitron", "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Prism token colors: forge metals only */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6e6355;
+  font-style: italic;
+}
+.token.keyword,
+.token.selector,
+.token.important {
+  color: var(--copper);
+  text-shadow: 0 0 8px var(--copper-faint);
+}
+.token.string,
+.token.char,
+.token.attr-value {
+  color: var(--amber);
+}
+.token.number,
+.token.boolean,
+.token.constant {
+  color: var(--ember);
+}
+.token.function,
+.token.class-name {
+  color: var(--titanium);
+  text-shadow: 0 0 8px var(--titanium-faint);
+}
+.token.operator,
+.token.punctuation {
+  color: var(--titanium-dim);
+}
+.token.builtin,
+.token.decorator {
+  color: var(--amber-bright);
+}

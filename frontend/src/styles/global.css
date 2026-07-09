@@ -1,0 +1,169 @@
+@import "./theme.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--copper-glow);
+  color: #0b0806;
+}
+
+/*
+ * Premium forge glass: layered gradients, a metallic gradient rim
+ * (mask-composite ring), a hot top rim-light and a deep ember underglow.
+ * backdrop-filter kept as progressive enhancement (may be skipped by the
+ * browser inside CSS-3D transforms — the gradient body carries the look).
+ */
+.glass-panel {
+  position: relative;
+  background:
+    linear-gradient(165deg, rgba(46, 30, 18, 0.88) 0%, rgba(18, 12, 8, 0.82) 45%, rgba(30, 20, 13, 0.9) 100%);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border-radius: 18px;
+  box-shadow:
+    0 0 55px rgba(232, 130, 63, 0.08),
+    0 40px 80px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 195, 94, 0.16),
+    inset 0 -18px 50px rgba(255, 106, 43, 0.05);
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 164, 92, 0.65),
+    rgba(232, 130, 63, 0.1) 28%,
+    rgba(139, 144, 153, 0.3) 55%,
+    rgba(255, 106, 43, 0.4) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glow-text-copper {
+  color: var(--copper);
+  text-shadow: 0 0 14px var(--copper-glow);
+}
+
+.glow-text-amber {
+  color: var(--amber);
+  text-shadow: 0 0 14px var(--amber-glow);
+}
+
+.glow-text-titanium {
+  color: var(--titanium);
+  text-shadow: 0 0 10px var(--titanium-glow);
+}
+
+/* CSS stand-in for chromatic aberration on DOM text (WebGL post-fx
+   cannot reach the DOM): hot ember ghost left, cool titanium ghost right */
+.aberrate {
+  text-shadow:
+    -1.6px 0 rgba(255, 106, 43, 0.4),
+    1.6px 0 rgba(201, 205, 212, 0.3),
+    0 0 16px var(--copper-glow);
+}
+
+.app-shell {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* CRT / forge-terminal overlay */
+.crt-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.13) 3px,
+      rgba(0, 0, 0, 0) 4px
+    );
+  mix-blend-mode: multiply;
+}
+
+.crt-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 52%,
+    rgba(0, 0, 0, 0.48) 100%
+  );
+}
+
+.crt-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 195, 94, 0.025),
+    rgba(255, 106, 43, 0.02)
+  );
+  animation: crt-flicker 6s infinite steps(60);
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 0.9; }
+  7% { opacity: 0.75; }
+  9% { opacity: 1; }
+  36% { opacity: 0.85; }
+  38% { opacity: 1; }
+  71% { opacity: 0.8; }
+  73% { opacity: 1; }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--copper-dim);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
