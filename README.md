@@ -1,5 +1,7 @@
 # AI Code Maintainability Scoring & Refactoring Engine
 
+🚀 **Live Demo:** [ai-code-maintainability.hmuhammadusman.com](https://ai-code-maintainability.hmuhammadusman.com)
+
 ## Overview
 The **AI Code Maintainability Scoring Engine** is a modular, machine-learning-based system designed to evaluate the structural quality of Python code and autonomously refactor it. Rather than relying on rigid rule-based linters (like PyLint or Flake8), this engine uses a supervised learning approach (Random Forest) to predict maintainability risks dynamically based on pure structural signals, and then utilizes Deep Learning (CodeT5) to actively improve the code.
 
