@@ -185,7 +185,7 @@ export default function Scene3D({
         <CameraDrift intensity={intensity} />
 
         {/* forge-glass editor stage, floating above the grid */}
-        <group position={[0, 1.55, 0]} rotation={[-0.05, 0, 0]}>
+        <group position={[0, 0.85, 0]} rotation={[-0.05, 0, 0]}>
           <Html transform distanceFactor={4} zIndexRange={[40, 0]} className="panel3d stage-panel3d">
             {stagePanel}
           </Html>
