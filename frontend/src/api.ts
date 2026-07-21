@@ -16,14 +16,17 @@ export interface RefactorResult {
   iterations_run: number;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+
 async function post<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const fullPath = `${API_BASE_URL}${path}`;
+  const res = await fetch(fullPath, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   if (!res.ok) {
-    throw new Error(`Request to ${path} failed with status ${res.status}`);
+    throw new Error(`Request to ${fullPath} failed with status ${res.status}`);
   }
   return res.json() as Promise<T>;
 }
